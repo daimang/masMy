@@ -1,0 +1,76 @@
+server:
+  port: 8080
+
+---
+spring:
+  profiles: default
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: localhost:9092
+        streams:
+          binder:
+            default:
+              key:
+                serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              value:
+                serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      bindings:
+        event-in:
+          group: mypage${random.value}
+          destination: eventTopic
+          contentType: application/json
+        event-out:
+          destination: eventTopic
+          contentType: application/json
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        show_sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        type: trace
+
+server:
+  port: 8086
+---
+spring:
+  profiles: docker
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: my-kafka.kafka.svc.cluster.local:9092
+        streams:
+          binder:
+            default:
+              key:
+                serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              value:
+                serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      bindings:
+        event-in:
+          group: mypage${random.value}
+          destination: eventTopicDocker
+          contentType: application/json
+        event-out:
+          destination: eventTopicDocker
+          contentType: application/json
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect
+        show_sql: true

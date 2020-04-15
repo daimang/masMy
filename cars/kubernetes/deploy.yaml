@@ -1,0 +1,16 @@
+apiVersion : apps/v1beta1
+kind: Deployment
+metadata:
+  name: car
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: car
+    spec:
+      containers:
+        - name: car
+          image: myeventstormingregistry.azurecr.io/car
+          ports:
+            - containerPort: 8080
